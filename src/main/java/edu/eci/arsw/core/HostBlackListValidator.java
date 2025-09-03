@@ -1,15 +1,17 @@
 package edu.eci.arsw.core;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class HostBlackListValidator {
-    private static final int BLACK_LIST_ALARM_COUNT = 5; // ejemplo
-    private final List<Server> servers;
+    private final List<BlackListServer> servers;
+    public static final int BLACK_LIST_ALARM_COUNT = 5; // ajusta según tu consigna
 
-    public List<Integer> checkHost(String ipAddress, int nThreads) {
+    public HostBlackListValidator(List<BlackListServer> servers) {
+        this.servers = servers;
+    }
+
+    public List<Integer> checkHost(String ipAddress, int nThreads) throws InterruptedException {
         List<Integer> blackListOccurrences = Collections.synchronizedList(new ArrayList<>());
         AtomicInteger alarmCounter = new AtomicInteger(0);
 
@@ -27,8 +29,7 @@ public class HostBlackListValidator {
                         blackListOccurrences.add(j);
 
                         if (count >= BLACK_LIST_ALARM_COUNT) {
-                            // Detener la búsqueda: el hilo actual termina y los demás saldrán por la condición del for
-                            break;
+                            break; // Parada temprana
                         }
                     }
                 }
