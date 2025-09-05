@@ -12,6 +12,10 @@ public final class PauseController {
     private int waitingThreads = 0;
     private int totalThreads = 0;
 
+    /**
+     * Registrar un hilo que usará este controlador. Debe llamarse una vez por
+     * cada hilo antes de que pueda usar awaitIfPaused.
+     */
     public void registerThread() {
         lock.lock();
         try {
@@ -21,6 +25,10 @@ public final class PauseController {
         }
     }
 
+    /**
+     * Desregistrar un hilo que ya no usará este controlador. Debe llamarse una
+     * vez por cada hilo que haya llamado a registerThread.
+     */
     public void pause() {
         lock.lock();
         try {
@@ -33,6 +41,9 @@ public final class PauseController {
         }
     }
 
+    /**
+     * Reanudar todos los hilos que estén esperando en awaitIfPaused.
+     */
     public void resume() {
         lock.lock();
         try {
@@ -47,6 +58,13 @@ public final class PauseController {
         return paused;
     }
 
+    /**
+     * Si el controlador está en pausa, el hilo que llame a este método se
+     * bloqueará hasta que se reanude. Si no está en pausa, el método retorna
+     * inmediatamente.
+     *
+     * @throws InterruptedException si el hilo es interrumpido mientras espera.
+     */
     public void awaitIfPaused() throws InterruptedException {
         lock.lockInterruptibly();
         try {

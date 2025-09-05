@@ -25,6 +25,12 @@ public final class ImmortalManager implements AutoCloseable {
         this(n, fightMode, Integer.getInteger("health", 100), Integer.getInteger("damage", 10));
     }
 
+    /**
+     * Crea un nuevo ImmortalManager con n inmortales, cada uno con la salud
+     * inicial y el daño especificados. El modo de pelea puede ser "naive" u
+     * "ordered". Ademas se le asigna un registrador de pausas para controlar la
+     * ejecucion de los hilos.
+     */
     public ImmortalManager(int n, String fightMode, int initialHealth, int damage) {
         this.fightMode = fightMode;
         this.initialHealth = initialHealth;

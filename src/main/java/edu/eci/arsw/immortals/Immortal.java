@@ -82,7 +82,9 @@ public final class Immortal implements Runnable {
     }
 
     /* 
-     * Método de pelea ingenuo que puede causar deadlocks.
+     * Metodo de pelea ingenuo que puede causar deadlocks.
+     * Se le implemento el condicional no permitir que la salud de un inmortal
+     * baje de 0.
      */
     private void fightNaive(Immortal other) {
         synchronized (this) {
@@ -105,8 +107,11 @@ public final class Immortal implements Runnable {
         }
     }
 
-    /* 
-     * Evita deadlocks al ordenar los locks por nombre de inmortal.
+    /*
+     * Metodo de pelea ordenado que evita deadlocks al adquirir los locks en un
+     * orden consistente basado en el nombre del inmortal.
+     * Se le implemento el condicional no permitir que la salud de un inmortal
+     * baje de 0.
      */
     private void fightOrdered(Immortal other) {
         Immortal first = this.name.compareTo(other.name) < 0 ? this : other;

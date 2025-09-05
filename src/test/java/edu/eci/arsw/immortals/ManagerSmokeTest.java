@@ -10,6 +10,10 @@ import edu.eci.arsw.concurrency.PauseController;
 
 final class ManagerSmokeTest {
 
+    /*
+    * Prueba de humo que inicia y detiene el ImmortalManager, verificando que la
+    * salud total sea positiva.
+     */
     @Test
     void startsAndStops() throws Exception {
         var m = new ImmortalManager(8, "ordered", 100, 10);
@@ -22,6 +26,9 @@ final class ManagerSmokeTest {
         assertTrue(sum > 0);
     }
 
+    /*
+    * Prueba que verifica que la logica de pelea es correcta.
+     */
     @Test
     void fightLogicIsCorrect() throws Exception {
         int initialHealth = 100;
@@ -47,6 +54,10 @@ final class ManagerSmokeTest {
                 "Debe registrarse una pelea en el marcador");
     }
 
+    /*
+    * Prueba que verifica que la pausa y reanudacion funciona correctamente.
+     * La salud total no debe cambiar mientras los hilos estan pausados.
+     */
     @Test
     void healthDoesNotChangeWhilePaused() throws Exception {
         int n = 10;
