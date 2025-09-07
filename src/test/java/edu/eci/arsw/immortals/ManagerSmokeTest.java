@@ -41,8 +41,8 @@ final class ManagerSmokeTest {
         Immortal a = new Immortal("A", initialHealth, damage, List.of(), scoreBoard, controller);
         Immortal b = new Immortal("B", initialHealth, damage, List.of(), scoreBoard, controller);
 
-        // Usamos reflexión para invocar fightNaive directamente, ya que es un metodo privado
-        var method = Immortal.class.getDeclaredMethod("fightNaive", Immortal.class);
+        // Usamos reflexión para invocar fightOrdered directamente, ya que es un metodo privado
+        var method = Immortal.class.getDeclaredMethod("fightOrdered", Immortal.class);
         method.setAccessible(true);
 
         method.invoke(a, b); // A ataca a B
