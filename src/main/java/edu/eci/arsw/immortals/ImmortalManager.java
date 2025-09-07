@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import edu.eci.arsw.concurrency.PauseController;
 
@@ -60,12 +61,31 @@ public final class ImmortalManager implements AutoCloseable {
     }
 
     public void stop() {
+        if (exec == null) {
+            return;
+        }
+
+        // Indicar a todos los inmortales que deben detenerse
         for (Immortal im : population) {
             im.stop();
         }
-        if (exec != null) {
+
+        // Reanudar todos los hilos pausados para que puedan salir del awaitIfPaused
+        controller.resume();
+
+        // Apagar el executor de forma ordenada
+        exec.shutdown();
+        try {
+            // Esperar hasta 5 segundos para que todos los hilos terminen
+            if (!exec.awaitTermination(5, TimeUnit.SECONDS)) {
+                // Si no terminan en tiempo, forzar apagado
+                exec.shutdownNow();
+            }
+        } catch (InterruptedException e) {
             exec.shutdownNow();
+            Thread.currentThread().interrupt();
         }
+        exec = null;
     }
 
     public int aliveCount() {

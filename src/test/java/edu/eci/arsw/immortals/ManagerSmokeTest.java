@@ -3,6 +3,7 @@ package edu.eci.arsw.immortals;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
@@ -85,5 +86,60 @@ final class ManagerSmokeTest {
         // Validamos que la salud no haya cambiado mientras estaba pausado
         assertEquals(total1, total2,
                 "La salud no debe cambiar mientras los hilos están pausados");
+    }
+
+    /*
+    * Prueba que verifica que el metodo stop funciona correctamente.
+    * La salud total no debe cambiar despues de detener los hilos.
+     */
+    @Test
+    void stopDoesNotChangeHealthAfterTermination() throws Exception {
+        int n = 5;
+        int initialHealth = 100;
+        int damage = 10;
+
+        ImmortalManager manager = new ImmortalManager(n, "ordered", initialHealth, damage);
+        manager.start();
+
+        // Dejamos que peleen un poco
+        Thread.sleep(200);
+
+        // Tomamos la salud antes de stop
+        long totalBefore = manager.totalHealth();
+
+        // Stop ordenado
+        manager.stop();
+
+        // Salud después de detener
+        long totalAfter = manager.totalHealth();
+
+        // La salud no debería cambiar después de detener
+        assertEquals(totalBefore, totalAfter,
+                "La salud total no debe cambiar después de detener los hilos");
+    }
+
+    /*
+    * Prueba que verifica que el metodo stop funciona correctamente incluso
+    * cuando los hilos están pausados. Todos los hilos deben terminar.
+     */
+    @Test
+    void stopWorksWhilePaused() throws Exception {
+        int n = 10;
+        int initialHealth = 100;
+        int damage = 10;
+
+        ImmortalManager manager = new ImmortalManager(n, "ordered", initialHealth, damage);
+        manager.start();
+
+        // Pausamos los hilos
+        manager.pause();
+
+        // Stop mientras los hilos están pausados
+        manager.stop();
+
+        // Todos los hilos deben terminar
+        for (Immortal im : manager.populationSnapshot()) {
+            assertFalse(im.isAlive(), im.name() + " debe estar detenido incluso si estaba pausado");
+        }
     }
 }
