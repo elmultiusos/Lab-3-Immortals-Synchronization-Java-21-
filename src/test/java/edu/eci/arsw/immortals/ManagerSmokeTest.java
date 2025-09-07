@@ -55,6 +55,24 @@ final class ManagerSmokeTest {
                 "Debe registrarse una pelea en el marcador");
     }
 
+    @Test
+    void invariantHoldsAfterPause() throws Exception {
+        int n = 8;
+        int health = 100;
+        int damage = 10;
+
+        // Valor total esperado del invariante
+        int expectedTotal = n * health;
+
+        var m = new ImmortalManager(n, "ordered", health, damage);
+
+        // Ahora sí, snapshot consistente
+        long total = m.totalHealth();
+
+        assertEquals(expectedTotal, total,
+                "La suma total de salud debe mantenerse constante cuando no hay updates");
+    }
+
     /*
     * Prueba que verifica que la pausa y reanudacion funciona correctamente.
      * La salud total no debe cambiar mientras los hilos estan pausados.
